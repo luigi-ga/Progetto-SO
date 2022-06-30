@@ -11,6 +11,9 @@ void sig_handler(int signum) {
 }
 
 
+/* Useful links:
+ * https://linuxaria.com/howto/understanding-the-top-command-on-linux?lang=it */
+
 int main() {
     signal(SIGALRM, sig_handler); // Register signal handler
     
