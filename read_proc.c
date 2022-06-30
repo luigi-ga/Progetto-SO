@@ -3,7 +3,7 @@
 /* Useful links:
  * https://man7.org/linux/man-pages/man2/sysinfo.2.html
  * https://stackoverflow.com/questions/39066998/what-are-the-meaning-of-values-at-proc-pid-stat */
-
+// Luigi Gallo
 void get_procinfo(ProcInfo *proc, int pid) {
     char filename[300];
     sprintf(filename, "/proc/%d/stat", pid);    
