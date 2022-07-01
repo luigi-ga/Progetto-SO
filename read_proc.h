@@ -23,6 +23,9 @@ typedef struct ProcInfo {
     long int nice;
     unsigned long virt;
     long int res;
+    //alessandro angeleri
+    long int statm_resident;
+    long int statm_data;
 } ProcInfo;
 
 
