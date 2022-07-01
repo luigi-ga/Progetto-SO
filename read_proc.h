@@ -30,6 +30,7 @@ typedef struct ProcInfo {
 } ProcInfo;
 
 
+void get_uptime(double *uptime);
 void get_procinfo(ProcInfo *proc, int pid);
 
 
