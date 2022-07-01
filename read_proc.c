@@ -25,4 +25,13 @@ void get_procinfo(ProcInfo *proc, int pid) {
             &proc->res);
             
     fclose(fp);
+
+    //Alessandro Angeleri
+    sprintf(filename,"/proc/%d/statm",pid);
+    fp = fopen(filename,"r");
+    if (!fp) handle_error("ERROR (get_procinfo): fopen /proc/[pid]/statm file");
+    fscanf(fp, "%*d %ld %*d %*d %*d %ld %*d",
+            &proc->statm_resident,
+            &proc->statm_data);
+    fclose(fp);
 }
