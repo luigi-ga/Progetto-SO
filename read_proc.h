@@ -11,6 +11,7 @@
 
 /* https://stackoverflow.com/questions/39066998/what-are-the-meaning-of-values-at-proc-pid-stat */
 typedef struct ProcInfo {
+    // lg
     unsigned pid;
     char command[20];
     char state;
@@ -23,7 +24,7 @@ typedef struct ProcInfo {
     long int nice;
     unsigned long virt;
     long int res;
-    //alessandro angeleri
+    // aa
     long int statm_resident;
     long int statm_data;
 } ProcInfo;
