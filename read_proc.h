@@ -11,7 +11,6 @@
 
 /* https://stackoverflow.com/questions/39066998/what-are-the-meaning-of-values-at-proc-pid-stat */
 typedef struct ProcInfo {
-    // lg
     unsigned pid;
     char command[20];
     char state;
@@ -24,14 +23,25 @@ typedef struct ProcInfo {
     long int nice;
     unsigned long virt;
     long int res;
-    // aa
+    //aa
     long int statm_resident;
-    long int statm_data;
+    long int statm_data; 
 } ProcInfo;
 
+//aa
+typedef struct MemInfo {
+    unsigned long memTotal;
+    unsigned long memFree;
+    unsigned long buffers;
+    unsigned long swapTotal;
+    unsigned long swapFree;
+    unsigned long memAvailable;
+} MemInfo;
 
-void get_uptime(double *uptime);
+//lg
 void get_procinfo(ProcInfo *proc, int pid);
 
+//aa
+void get_meminfo(MemInfo *mem);
 
 #endif
