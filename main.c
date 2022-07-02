@@ -16,6 +16,7 @@ void sig_handler(int signum) {
 void print_top() {
     write(STDOUT_FILENO, "\e[1;1H\e[2J", 11); 
 
+    // lg
     MemInfo *mem = (MemInfo*)malloc(sizeof(MemInfo));
     get_meminfo(mem);
     printf("MiB Mem: %.1f total, %.1f free, %.1f used, %.1f buff/cache\n", 
@@ -29,8 +30,11 @@ void print_top() {
             MiB((mem->swapTotal - mem->swapFree)), 
             MiB(mem->memAvailable));
 
-    free(mem);
-    
+
+
+
+
+    free(mem);    
     alarm(1);
 }
 
