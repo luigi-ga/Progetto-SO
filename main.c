@@ -20,8 +20,11 @@ int filter(const struct dirent *dir) {
 
 
 /* Useful links:
- * https://linuxaria.com/howto/understanding-the-top-command-on-linux?lang=it ,  
-   https://www.baeldung.com/linux/total-process-cpu-usage */
+ * https://linuxaria.com/howto/understanding-the-top-command-on-linux?lang=it 
+   https://www.idnt.net/en-US/kb/941772 
+   https://www.baeldung.com/linux/total-process-cpu-usage 
+   https://stackoverflow.com/questions/2347770/how-do-you-clear-the-console-screen-in-c 
+   */
 void print_top() {
     write(STDOUT_FILENO, "\e[1;1H\e[2J", 11); 
 
@@ -54,8 +57,9 @@ void print_top() {
 
     // aa
     // CICLO SUI PID
-    printf("\n%c[%d;%dm%6s %-8s %3s %2s %8s %8s %8s %2s %6s %6s %8s %-5s %c[%dm\n", 27, 1, 35,
-            "PID", "USER", "PR", "NI", "VIRT", "RES", "SH", "S", "%%CPU", "%%MEM", "TIME+", "COMMAND", 27, 0);
+    // https://stackoverflow.com/questions/58314879/terminal-background-color-not-always-properly-reset-using-0330m
+    printf("\033[46m\n%6s %-8s %3s %2s %8s %8s %8s %2s %6s %6s %8s %-5s %c[0m\n",
+            "PID", "USER", "PR", "NI", "VIRT", "RES", "SH", "S", "%%CPU", "%%MEM", "TIME+", "COMMAND", 27);
     struct dirent **namelist;
     ProcInfo *proc = (ProcInfo*)malloc(sizeof(ProcInfo));
     // prendiamo dalla directory proc solo le directory il cui nome sia un numero
