@@ -54,7 +54,8 @@ void print_top() {
 
     // aa
     // CICLO SUI PID
-    printf("\n%c[%d;%dmPID       |USER  |PR   |NI   |VIRT      |RES  |SH |S    |%%CPU |%%MEM |TIME+   |COMMAND%c[%dm\n",27,1,35,27,0);
+    printf("\n%c[%d;%dm%6s %-8s %3s %2s %8s %8s %8s %2s %6s %6s %8s %-5s %c[%dm\n", 27, 1, 35,
+            "PID", "USER", "PR", "NI", "VIRT", "RES", "SH", "S", "%%CPU", "%%MEM", "TIME+", "COMMAND", 27, 0);
     struct dirent **namelist;
     ProcInfo *proc = (ProcInfo*)malloc(sizeof(ProcInfo));
     // prendiamo dalla directory proc solo le directory il cui nome sia un numero
@@ -64,12 +65,14 @@ void print_top() {
     while (n--) {
         // richiama la funzione get_procinfo su ogni processo
         get_procinfo(proc,atoi(namelist[n]->d_name));
-        printf("%-10d| user |%-5ld|%-5ld|%-10lu|%-5ld|SHR|%-5c|%-5.1f|%-5.1f|0:%-6.2f|%s\n",
+        printf("%6d %-8s %3ld %2ld %8lu %8ld %8s %2c %6.1f %6.1f %8.2f %-5s\n",
                 proc->pid,
+                "user",
                 proc->priority,
                 proc->nice,
                 (long int) MiB(proc->virt),
                 proc->res,
+                "shr",
                 proc->state,
                 (float)  (((proc->utime/100) + (proc->stime/100))*100 / (uptime - (proc->starttime / 100))),
                 (float) ((proc->statm_resident + proc->statm_data)*100) / (mem->memTotal),
