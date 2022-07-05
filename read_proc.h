@@ -3,14 +3,21 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <errno.h>
 
 #define MiB(mem) (float) mem/(1<<10)
 
 #define handle_error(msg)   do { perror(msg); exit(EXIT_FAILURE); } while (0)
 
+typedef struct LoadAvg {
+    float load0;
+    float load1;
+    float load2;
+} LoadAvg;
 
 /* https://stackoverflow.com/questions/39066998/what-are-the-meaning-of-values-at-proc-pid-stat */
 typedef struct ProcInfo {
+    // lg
     unsigned pid;
     char command[20];
     char state;
@@ -23,12 +30,12 @@ typedef struct ProcInfo {
     long int nice;
     unsigned long virt;
     long int res;
-    //aa
+    // aa
     long int statm_resident;
     long int statm_data; 
 } ProcInfo;
 
-//aa
+// aa
 typedef struct MemInfo {
     unsigned long memTotal;
     unsigned long memFree;
@@ -39,9 +46,13 @@ typedef struct MemInfo {
 } MemInfo;
 
 //lg
-void get_procinfo(ProcInfo *proc, int pid);
+void get_uptime(double *uptime);
+void get_loadavg(LoadAvg *loads);
 
 //aa
 void get_meminfo(MemInfo *mem);
+
+// lg, aa
+void get_procinfo(ProcInfo *proc, int pid);
 
 #endif
