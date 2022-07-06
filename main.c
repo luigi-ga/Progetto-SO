@@ -40,6 +40,21 @@ void print_top() {
             time->tm_hour, time->tm_min, time->tm_sec,
             (int) uptime/60, 
             loads->load0, loads->load1, loads->load2);
+    
+    //aa
+    CpuInfo *cpu = (CpuInfo*)malloc(sizeof(CpuInfo));
+    get_cpuinfo(cpu);
+    long int cpu_sum = (cpu->user)+(cpu->system)+(cpu->nice)+(cpu->idle)+(cpu->iowait)+(cpu->irq)+(cpu->softirq)+(cpu->steal)+(cpu->guest);
+    printf("%%Cpu(s): %.1f us,  %.1f sy,  %.1f ni,%.1f id,  %.1f wa,  %.1f hi,  %.1f si, %.1f st\n",
+            (100* ((cpu->user)/(cpu_sum))),
+            (100* ((cpu->system)/(cpu_sum))),
+            (100* ((cpu->nice)/(cpu_sum))),
+            (100* ((cpu->idle)/(cpu_sum))),
+            (100* ((cpu->iowait)/(cpu_sum))),
+            0.0,
+            (100* ((cpu->softirq)/(cpu_sum))),
+            (100*((cpu->steal)/(cpu_sum))));
+
 
     // lg
     MemInfo *mem = (MemInfo*)malloc(sizeof(MemInfo));

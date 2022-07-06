@@ -47,6 +47,24 @@ void get_meminfo(MemInfo *mem) {
     if (fclose(fp)) handle_error("ERROR (get_meminfo): fclose /proc/meminfo file");
 }
 
+//aa 
+void get_cpuinfo(CpuInfo *cpu) {
+    FILE *fp = fopen("/proc/stat","r");
+    if (!fp) handle_error("ERROR (get_cpuinfo): fopen /proc/stat file");
+    fscanf(fp,"%*s %lf %lf %lf %lf %lf %lf %lf %lf %lf %*d",
+        &cpu->user,
+        &cpu->nice,
+        &cpu->system,
+        &cpu->idle,
+        &cpu->iowait,
+        &cpu->irq,
+        &cpu->softirq,
+        &cpu->steal,
+        &cpu->guest
+    );
+    fclose(fp);
+}
+
 /* Useful links:
  * https://man7.org/linux/man-pages/man2/sysinfo.2.html
  * https://stackoverflow.com/questions/39066998/what-are-the-meaning-of-values-at-proc-pid-stat */

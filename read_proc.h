@@ -45,12 +45,29 @@ typedef struct MemInfo {
     unsigned long memAvailable;
 } MemInfo;
 
+//aa
+typedef struct CpuInfo {
+    double user;
+    double nice;
+    double system;
+    double idle;
+    double iowait;
+    double irq;
+    double softirq;
+    double steal;
+    double guest;
+
+} CpuInfo;
+
 //lg
 void get_uptime(double *uptime);
 void get_loadavg(LoadAvg *loads);
 
 //aa
 void get_meminfo(MemInfo *mem);
+
+//aa
+void get_cpuinfo(CpuInfo *cpu);
 
 // lg, aa
 void get_procinfo(ProcInfo *proc, int pid);
