@@ -93,7 +93,7 @@ void print_top() {
                 proc->res,
                 "shr",
                 proc->state,
-                (float)  (((proc->utime/100) + (proc->stime/100))*100 / (uptime - (proc->starttime / 100))),
+                (float)  (((proc->utime) + (proc->stime)) / (uptime - (proc->starttime / 100))),
                 (float) ((proc->statm_resident + proc->statm_data)*100) / (mem->memTotal),
                 (float) (proc->utime + proc->stime) / 100,
                 proc->command);     
