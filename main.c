@@ -11,7 +11,7 @@
 #define STOPPED 84
 #define ZOMBIE 90
 
-#define CYAN "\033[0;36m"
+#define CYAN "\e[1m\033[0;36m"
 #define WHITE "\033[0;37m"
 
 int print = 1;
@@ -61,7 +61,7 @@ void print_top() {
     CpuInfo *cpu = (CpuInfo*)malloc(sizeof(CpuInfo));
     get_cpuinfo(cpu);
     long int cpu_sum = (cpu->user)+(cpu->system)+(cpu->nice)+(cpu->idle)+(cpu->iowait)+(cpu->irq)+(cpu->softirq)+(cpu->steal)+(cpu->guest);
-    printf("%%Cpu(s): %.1f us,  %.1f sy,  %.1f ni,%.1f id,  %.1f wa,  %.1f hi,  %.1f si, %.1f st\n",
+    printf("%%Cpu(s): %.1f us, %.1f sy, %.1f ni, %.1f id, %.1f wa, %.1f hi, %.1f si, %.1f st\n",
             (100* ((cpu->user)/(cpu_sum))),
             (100* ((cpu->system)/(cpu_sum))),
             (100* ((cpu->nice)/(cpu_sum))),
@@ -101,7 +101,7 @@ void print_top() {
         get_procinfo(proc,atoi(namelist[n]->d_name));
         char *color = WHITE;
         if(proc->state == RUNNING) color = CYAN;
-        printf("%s %6d %-8s %3ld %2ld %8lu %8ld %8s %2c %6.1f %6.1f %8.2f %-5s\e[0m\n",
+        printf("%s%6d %-8s %3ld %2ld %8lu %8ld %8ld %2c %6.1f %6.1f %8.2f %-5s\e[0m\n",
                 color,
                 proc->pid,
                 "user",
@@ -109,10 +109,10 @@ void print_top() {
                 proc->nice,
                 (long int) MiB(proc->virt),
                 proc->res,
-                "shr",
+                proc->shared * (1<<2),
                 proc->state,
                 (float)  (((proc->utime) + (proc->stime)) / (uptime - (proc->starttime / 100))),
-                (float) ((proc->statm_resident + proc->statm_data)*100) / (mem->memTotal),
+                (float) ((proc->resident + proc->data)*100) / (mem->memTotal),
                 (float) (proc->utime + proc->stime) / 100,
                 proc->command);   
             

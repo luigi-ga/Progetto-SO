@@ -65,9 +65,9 @@ void get_meminfo(MemInfo *mem) {
     if (fclose(fp)) handle_error("ERROR (get_meminfo): fclose /proc/meminfo file");
 }
 
-/* Useful links:
- * https://man7.org/linux/man-pages/man2/sysinfo.2.html
- * https://stackoverflow.com/questions/39066998/what-are-the-meaning-of-values-at-proc-pid-stat */
+/* https://man7.org/linux/man-pages/man2/sysinfo.2.html
+ * https://stackoverflow.com/questions/39066998/what-are-the-meaning-of-values-at-proc-pid-stat 
+ * https://man7.org/linux/man-pages/man5/proc.5.html*/
 void get_procinfo(ProcInfo *proc, int pid) {
     // lg
     char filename[300];
@@ -93,8 +93,9 @@ void get_procinfo(ProcInfo *proc, int pid) {
     sprintf(filename,"/proc/%d/statm",pid);
     fp = fopen(filename,"r");
     if (!fp) handle_error("ERROR (get_procinfo): fopen /proc/[pid]/statm file");
-    fscanf(fp, "%*d %ld %*d %*d %*d %ld %*d",
-        &proc->statm_resident,
-        &proc->statm_data);
+    fscanf(fp, "%*d %ld %ld %*d %*d %ld %*d",
+        &proc->resident,
+        &proc->shared,
+        &proc->data);
     fclose(fp);
 }

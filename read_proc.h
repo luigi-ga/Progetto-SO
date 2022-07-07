@@ -31,8 +31,9 @@ typedef struct ProcInfo {
     unsigned long virt;
     long int res;
     // aa
-    long int statm_resident;
-    long int statm_data; 
+    long int resident;
+    long int shared;
+    long int data; 
 } ProcInfo;
 
 // aa
