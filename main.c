@@ -62,14 +62,14 @@ void print_top() {
     get_cpuinfo(cpu);
     long int cpu_sum = (cpu->user)+(cpu->system)+(cpu->nice)+(cpu->idle)+(cpu->iowait)+(cpu->irq)+(cpu->softirq)+(cpu->steal)+(cpu->guest);
     printf("%%Cpu(s): %.1f us, %.1f sy, %.1f ni, %.1f id, %.1f wa, %.1f hi, %.1f si, %.1f st\n",
-            (100* ((cpu->user)/(cpu_sum))),
-            (100* ((cpu->system)/(cpu_sum))),
-            (100* ((cpu->nice)/(cpu_sum))),
-            (100* ((cpu->idle)/(cpu_sum))),
-            (100* ((cpu->iowait)/(cpu_sum))),
+            (100* (cpu->user/cpu_sum)),
+            (100* (cpu->system/cpu_sum)),
+            (100* (cpu->nice/cpu_sum)),
+            (100* (cpu->idle/cpu_sum)),
+            (100* (cpu->iowait/cpu_sum)),
             0.0,
-            (100* ((cpu->softirq)/(cpu_sum))),
-            (100*((cpu->steal)/(cpu_sum))));
+            (100* (cpu->softirq/cpu_sum)),
+            (100* (cpu->steal/cpu_sum)));
 
     // lg
     MemInfo *mem = (MemInfo*)malloc(sizeof(MemInfo));
@@ -89,7 +89,7 @@ void print_top() {
     // CICLO SUI PID
     // https://stackoverflow.com/questions/58314879/terminal-background-color-not-always-properly-reset-using-0330m
     printf("\033[46m\n%6s %-8s %3s %2s %8s %8s %8s %2s %6s %6s %8s %-5s %c\n\e[0m",
-            "PID", "USER", "PR", "NI", "VIRT", "RES", "SH", "S", "%%CPU", "%%MEM", "TIME+", "COMMAND", 27);
+            "PID", "USER", "PR", "NI", "VIRT", "RES", "SHR", "S", "\%CPU", "\%MEM", "TIME+", "COMMAND", 27);
     struct dirent **namelist;
     ProcInfo *proc = (ProcInfo*)malloc(sizeof(ProcInfo));
     // prendiamo dalla directory proc solo le directory il cui nome sia un numero
@@ -98,7 +98,7 @@ void print_top() {
     if (n == -1) handle_error("ERROR (print_top): scandir");
     while (n--) {
         // richiama la funzione get_procinfo su ogni processo
-        get_procinfo(proc,atoi(namelist[n]->d_name));
+        get_procinfo(proc, atoi(namelist[n]->d_name));
         char *color = WHITE;
         if(proc->state == RUNNING) color = CYAN;
         printf("%s%6d %-8s %3ld %2ld %8lu %8ld %8ld %2c %6.1f %6.1f %8.2f %-5s\e[0m\n",
@@ -107,16 +107,16 @@ void print_top() {
                 "user",
                 proc->priority,
                 proc->nice,
-                (long int) MiB(proc->virt),
+                proc->virt / (1<<10),
                 proc->res,
                 proc->shared * (1<<2),
                 proc->state,
-                (float)  (((proc->utime) + (proc->stime)) / (uptime - (proc->starttime / 100))),
-                (float) ((proc->resident + proc->data)*100) / (mem->memTotal),
+                (float)  ((proc->utime + proc->stime) / (uptime - (proc->starttime / 100))),
+                (float) ((proc->resident + proc->data) * 100) / (mem->memTotal),
                 (float) (proc->utime + proc->stime) / 100,
                 proc->command);   
             
-        //lg
+        // lg
         total_p += 1;
         switch(proc->state) {
             case(RUNNING):  running_p += 1; break;
