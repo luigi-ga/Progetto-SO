@@ -24,6 +24,24 @@ void get_loadavg(LoadAvg *loads) {
     if (fclose(fp)) handle_error("ERROR (get_loadavg): fclose /proc/loadavg file");
 }
 
+// aa 
+void get_cpuinfo(CpuInfo *cpu) {
+    FILE *fp = fopen("/proc/stat","r");
+    if (!fp) handle_error("ERROR (get_cpuinfo): fopen /proc/stat file");
+    fscanf(fp,"%*s %lf %lf %lf %lf %lf %lf %lf %lf %lf %*d",
+        &cpu->user,
+        &cpu->nice,
+        &cpu->system,
+        &cpu->idle,
+        &cpu->iowait,
+        &cpu->irq,
+        &cpu->softirq,
+        &cpu->steal,
+        &cpu->guest
+    );
+    fclose(fp);
+}
+
 // aa
 void get_meminfo(MemInfo *mem) {
     ssize_t read, len = 0;
@@ -45,24 +63,6 @@ void get_meminfo(MemInfo *mem) {
     }
     // close meminfo file
     if (fclose(fp)) handle_error("ERROR (get_meminfo): fclose /proc/meminfo file");
-}
-
-//aa 
-void get_cpuinfo(CpuInfo *cpu) {
-    FILE *fp = fopen("/proc/stat","r");
-    if (!fp) handle_error("ERROR (get_cpuinfo): fopen /proc/stat file");
-    fscanf(fp,"%*s %lf %lf %lf %lf %lf %lf %lf %lf %lf %*d",
-        &cpu->user,
-        &cpu->nice,
-        &cpu->system,
-        &cpu->idle,
-        &cpu->iowait,
-        &cpu->irq,
-        &cpu->softirq,
-        &cpu->steal,
-        &cpu->guest
-    );
-    fclose(fp);
 }
 
 /* Useful links:

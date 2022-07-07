@@ -6,7 +6,20 @@
 
 #include "read_proc.h"
 
+#define RUNNING 82
+#define SLEEPING 83
+#define STOPPED 84
+#define ZOMBIE 90
+
+#define CYAN "\033[0;36m"
+#define WHITE "\033[0;37m"
+
 int print = 1;
+unsigned int total_p = 0;
+unsigned int running_p = 0;
+unsigned int sleeping_p = 0;
+unsigned int stopped_p = 0;
+unsigned int zombie_p = 0;
 
 // lg
 void sig_handler(int signum) {
@@ -18,14 +31,12 @@ int filter(const struct dirent *dir) {
     return !fnmatch("[1-9]*",dir->d_name,0);
 }
 
-
-/* Useful links:
- * https://linuxaria.com/howto/understanding-the-top-command-on-linux?lang=it 
+/* https://linuxaria.com/howto/understanding-the-top-command-on-linux?lang=it 
    https://www.idnt.net/en-US/kb/941772 
    https://www.baeldung.com/linux/total-process-cpu-usage 
-   https://stackoverflow.com/questions/2347770/how-do-you-clear-the-console-screen-in-c 
-   */
+   https://stackoverflow.com/questions/2347770/how-do-you-clear-the-console-screen-in-c */
 void print_top() {
+    // clean stdout
     write(STDOUT_FILENO, "\e[1;1H\e[2J", 11); 
 
     // lg
@@ -41,7 +52,12 @@ void print_top() {
             (int) uptime/60, 
             loads->load0, loads->load1, loads->load2);
     
-    //aa
+    // lg
+    printf("Tasks: %d total, %d running, %d sleeping, %d stopped, %d zombie\n",
+                      total_p,  running_p,  sleeping_p,  stopped_p,  zombie_p);
+    total_p = running_p = sleeping_p = stopped_p = zombie_p = 0;
+
+    // aa
     CpuInfo *cpu = (CpuInfo*)malloc(sizeof(CpuInfo));
     get_cpuinfo(cpu);
     long int cpu_sum = (cpu->user)+(cpu->system)+(cpu->nice)+(cpu->idle)+(cpu->iowait)+(cpu->irq)+(cpu->softirq)+(cpu->steal)+(cpu->guest);
@@ -54,7 +70,6 @@ void print_top() {
             0.0,
             (100* ((cpu->softirq)/(cpu_sum))),
             (100*((cpu->steal)/(cpu_sum))));
-
 
     // lg
     MemInfo *mem = (MemInfo*)malloc(sizeof(MemInfo));
@@ -73,7 +88,7 @@ void print_top() {
     // aa
     // CICLO SUI PID
     // https://stackoverflow.com/questions/58314879/terminal-background-color-not-always-properly-reset-using-0330m
-    printf("\033[46m\n%6s %-8s %3s %2s %8s %8s %8s %2s %6s %6s %8s %-5s %c[0m\n",
+    printf("\033[46m\n%6s %-8s %3s %2s %8s %8s %8s %2s %6s %6s %8s %-5s %c\n\e[0m",
             "PID", "USER", "PR", "NI", "VIRT", "RES", "SH", "S", "%%CPU", "%%MEM", "TIME+", "COMMAND", 27);
     struct dirent **namelist;
     ProcInfo *proc = (ProcInfo*)malloc(sizeof(ProcInfo));
@@ -84,7 +99,10 @@ void print_top() {
     while (n--) {
         // richiama la funzione get_procinfo su ogni processo
         get_procinfo(proc,atoi(namelist[n]->d_name));
-        printf("%6d %-8s %3ld %2ld %8lu %8ld %8s %2c %6.1f %6.1f %8.2f %-5s\n",
+        char *color = WHITE;
+        if(proc->state == RUNNING) color = CYAN;
+        printf("%s %6d %-8s %3ld %2ld %8lu %8ld %8s %2c %6.1f %6.1f %8.2f %-5s\e[0m\n",
+                color,
                 proc->pid,
                 "user",
                 proc->priority,
@@ -96,16 +114,22 @@ void print_top() {
                 (float)  (((proc->utime) + (proc->stime)) / (uptime - (proc->starttime / 100))),
                 (float) ((proc->statm_resident + proc->statm_data)*100) / (mem->memTotal),
                 (float) (proc->utime + proc->stime) / 100,
-                proc->command);     
+                proc->command);   
+            
+        //lg
+        total_p += 1;
+        switch(proc->state) {
+            case(RUNNING):  running_p += 1; break;
+            case(SLEEPING): sleeping_p += 1; break;
+            case(STOPPED):  stopped_p += 1; break;
+            case(ZOMBIE):   zombie_p += 1; break;
+        }          
     }
-
-
-
-
-
-    free(proc);    
+       
     free(loads);
-    free(mem);   
+    free(cpu);
+    free(mem);  
+    free(proc);  
     alarm(1);
 }
 
