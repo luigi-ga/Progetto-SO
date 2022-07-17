@@ -136,6 +136,7 @@ void print_top() {
     alarm(1);
 }
 
+//aa
 int askAction(struct dirent **list_names,int length) {
     int pid_to_affect;
     int action;
@@ -190,6 +191,7 @@ int askAction(struct dirent **list_names,int length) {
     return 1;
 }
 
+//aa
 void sigintHandler(int sig_num)
 {
     /* Reset handler to catch SIGINT next time.
