@@ -20,6 +20,8 @@ unsigned int running_p = 0;
 unsigned int sleeping_p = 0;
 unsigned int stopped_p = 0;
 unsigned int zombie_p = 0;
+struct dirent **namelist;
+int len_namelist;
 
 // lg
 void sig_handler(int signum) {
@@ -90,11 +92,12 @@ void print_top() {
     // https://stackoverflow.com/questions/58314879/terminal-background-color-not-always-properly-reset-using-0330m
     printf("\033[46m\n%6s %-8s %3s %2s %8s %8s %8s %2s %6s %6s %8s %-5s %c\n\e[0m",
             "PID", "USER", "PR", "NI", "VIRT", "RES", "SHR", "S", "\%CPU", "\%MEM", "TIME+", "COMMAND", 27);
-    struct dirent **namelist;
+    
     ProcInfo *proc = (ProcInfo*)malloc(sizeof(ProcInfo));
     // prendiamo dalla directory proc solo le directory il cui nome sia un numero
     // in modo da prendere solo le cartelle dei processi
     int n = scandir("/proc", &namelist, filter, alphasort);
+    len_namelist = n;
     if (n == -1) handle_error("ERROR (print_top): scandir");
     while (n--) {
         // richiama la funzione get_procinfo su ogni processo
@@ -133,9 +136,71 @@ void print_top() {
     alarm(1);
 }
 
+int askAction(struct dirent **list_names,int length) {
+    int pid_to_affect;
+    int action;
+    int trovato = 0;
+    printf("\nEnter the PID of the process that you wanna affect or 0 to continue: ");
+    scanf("%d", &pid_to_affect);
+    if (pid_to_affect == 0) {
+      return 0;
+    }
+    int i = 0;
+    while(i<length) {
+        if (pid_to_affect == atoi(list_names[i]->d_name)) {
+          trovato = 1;
+        }
+        i++;
+    }
+
+    if (trovato == 0) {
+      printf("PID invalid... retry\n");
+      return 0;
+    }
+
+    printf("Enter the action to do on this process: \n 0 -> terminate\n 1 -> kill\n 2 -> suspend\n 3 -> resume\n");
+    scanf("%d",&action);
+
+    if (action != 0 && action != 1 && action != 2 && action != 3) {
+      printf("Action invalid... retry\n");
+      return 0;
+    }
+    switch (action) {
+        case 0:
+            kill(pid_to_affect,SIGINT);
+            printf("Process with PID: %d Interrupted\n",pid_to_affect);
+            break;
+        case 1:
+            kill(pid_to_affect,SIGKILL);
+            printf("Process with PID: %d Killed\n",pid_to_affect);
+            break;
+        case 2:
+            kill(pid_to_affect,SIGSTOP);
+            printf("Process with PID: %d Stopped\n",pid_to_affect);
+            break;
+        case 3:
+            kill(pid_to_affect,SIGCONT);
+            printf("Process with PID: %d Resumed\n",pid_to_affect);
+            break;
+        default:
+            printf("Action invalid...\n");
+            break;
+    }
+    alarm(1);
+    return 1;
+}
+
+void sigintHandler(int sig_num)
+{
+    /* Reset handler to catch SIGINT next time.
+    Refer http://en.cppreference.com/w/c/program/signal */
+    signal(SIGQUIT, sigintHandler);
+    askAction(namelist,len_namelist);
+}
 
 int main() {
     signal(SIGALRM, sig_handler); // Register signal handler
+    signal(SIGQUIT, sigintHandler);
     
     while(1) {
         if(print) {
@@ -143,5 +208,7 @@ int main() {
             print_top();
         } 
     }
+    
+    
     return 0;
 }
