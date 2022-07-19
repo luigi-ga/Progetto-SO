@@ -18,6 +18,8 @@
 #define YELLOW  "\033[0;33m"
 #define PURPLE  "\033[0;35m"
 
+#define ALARMTIME 2
+
 int print = 1, ask = 0;
 unsigned int total_p = 0;
 unsigned int running_p = 0;
@@ -151,8 +153,8 @@ void print_top() {
     free(loads);
     free(cpu);
     free(mem);  
-    //free(proc);  
-    alarm(1);
+    free(proc);  
+    alarm(ALARMTIME);
 }
 
 //aa
@@ -171,7 +173,7 @@ int askAction(struct dirent **list_names,int length) {
 
     if (trovato == 0) {
       printf("Invalid PID... retry\n");
-      alarm(1);
+      alarm(ALARMTIME);
       print = 0;
       return 0;
     }
@@ -201,7 +203,7 @@ int askAction(struct dirent **list_names,int length) {
             break;
     }
 
-    alarm(1);
+    alarm(ALARMTIME);
     print = 0;
     return 1;
 }
