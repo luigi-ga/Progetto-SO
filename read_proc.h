@@ -19,6 +19,7 @@ typedef struct LoadAvg {
 typedef struct ProcInfo {
     // lg
     unsigned pid;
+    unsigned uid;
     char command[20];
     char state;
     unsigned long utime;
@@ -41,6 +42,7 @@ typedef struct MemInfo {
     unsigned long memTotal;
     unsigned long memFree;
     unsigned long buffers;
+    unsigned long cached;
     unsigned long swapTotal;
     unsigned long swapFree;
     unsigned long memAvailable;
@@ -60,16 +62,16 @@ typedef struct CpuInfo {
 } CpuInfo;
 
 // lg
-void get_uptime(double *uptime);
-void get_loadavg(LoadAvg *loads);
+int get_uptime(double *uptime);
+int get_loadavg(LoadAvg *loads);
 
 // aa
-void get_cpuinfo(CpuInfo *cpu);
+int get_cpuinfo(CpuInfo *cpu);
 
 // aa
-void get_meminfo(MemInfo *mem);
+int get_meminfo(MemInfo *mem);
 
 // lg, aa
-void get_procinfo(ProcInfo *proc, int pid);
+int get_procinfo(ProcInfo *proc, int pid);
 
 #endif
