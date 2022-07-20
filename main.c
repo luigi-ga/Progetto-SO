@@ -11,12 +11,12 @@
 #define STOPPED 84
 #define ZOMBIE 90
 
-#define CYAN    "\033[0;36m"
-#define WHITE   "\033[0;37m"
 #define RED     "\033[0;31m"
 #define GREEN   "\033[0;32m"
 #define YELLOW  "\033[0;33m"
 #define PURPLE  "\033[0;35m"
+#define CYAN    "\033[0;36m"
+#define WHITE   "\033[0;37m"
 
 #define ALARMTIME 2
 
@@ -123,7 +123,7 @@ void print_top() {
         char *color = WHITE;
         if (proc->state == RUNNING) color = CYAN;
         else if (proc->state == ZOMBIE) color = PURPLE;
-        else if (proc->state == STOPPED) color = RED;
+        else if (proc->state == STOPPED) color = GREEN;
         timesec = (proc->utime + proc->stime) / 100;
         printf("%s%6d %-6d %3ld %2ld %8lu %8ld %8ld %2c %6.1f %6.1f %3.2d:%.2d:%.2d %-5s\e[0m\n",
                 color,
@@ -149,6 +149,7 @@ void print_top() {
             case(ZOMBIE):   zombie_p += 1; break;
         }          
     }
+    printf("\n");
        
     free(loads);
     free(cpu);
@@ -161,7 +162,7 @@ void print_top() {
 int askAction(struct dirent **list_names,int length) {
     int pid_to_affect, action, trovato = 0, i = 0;
 
-    printf("\nEnter the PID of the process that you wanna affect or 0 to continue: ");
+    printf("\b\bEnter the PID of the process that you wanna affect or 0 to continue: ");
     scanf("%d", &pid_to_affect);
 
     if (pid_to_affect == 0) return 0;
@@ -178,25 +179,25 @@ int askAction(struct dirent **list_names,int length) {
       return 0;
     }
 
-    printf("Enter the action - \033[0;35m 0: terminate \033[0;33m 1: kill \033[0;32m 2: suspend \033[0;31m 3: resume\e[0m: ");
+    printf("Enter the action - \033[0;35m 0: terminate \033[0;31m 1: kill \033[0;32m 2: suspend \033[0;36m 3: resume\e[0m: ");
     scanf("%d", &action);
     
     switch (action) {
         case 0:
             kill(pid_to_affect, SIGINT);
-            printf("Process with PID: %d \033[0;35mInterrupted\e[0m\n",pid_to_affect);
+            printf("Process with PID: %d Interrupted \e[0m\n",pid_to_affect);
             break;
         case 1:
             kill(pid_to_affect, SIGKILL);
-            printf("Process with PID: %d \033[0;33mKilled\e[0m\n",pid_to_affect);
+            printf("Process with PID: %d Killed \e[0m\n",pid_to_affect);
             break;
         case 2:
             kill(pid_to_affect, SIGSTOP);
-            printf("Process with PID: %d \033[0;32mStopped\e[0m\n",pid_to_affect);
+            printf("Process with PID: %d Stopped \e[0m\n",pid_to_affect);
             break;
         case 3:
             kill(pid_to_affect, SIGCONT);
-            printf("Process with PID: %d \033[0;31mResumed\e[0m\n",pid_to_affect);
+            printf("Process with PID: %d Resumed \e[0m\n",pid_to_affect);
             break;
         default:
             printf("Action invalid... retry\n");
