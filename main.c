@@ -162,7 +162,7 @@ void print_top() {
 int askAction(struct dirent **list_names,int length) {
     int pid_to_affect, action, trovato = 0, i = 0;
 
-    printf("\b\bEnter the PID of the process that you wanna affect or 0 to continue: ");
+    printf("\b\bEnter the PID of the process that you want to affect or 0 to continue: ");
     scanf("%d", &pid_to_affect);
 
     if (pid_to_affect == 0) return 0;
