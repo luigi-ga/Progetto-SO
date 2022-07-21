@@ -67,7 +67,7 @@ void print_top() {
     if (get_loadavg(loads)) handle_error("ERROR (print_top): get_loadavg");
     double uptime;
     if (get_uptime(&uptime)) handle_error("ERROR (print_top): get_uptime");
-    printf("top - %.2d:%.2d:%.2d up %.2d:%.2d:%.2d, ??? users, load average: %.2f, %.2f, %.2f\n", 
+    printf("top - %.2d:%.2d:%.2d up %.2d:%.2d:%.2d, 0 users, load average: %.2f, %.2f, %.2f\n", 
             time->tm_hour, time->tm_min, time->tm_sec,
             (int) uptime/3600, (int) (uptime/60)%60, (int) uptime%60,
             loads->load0, loads->load1, loads->load2);
@@ -111,11 +111,11 @@ void print_top() {
     printf("\033[46m\n%6s %-6s %3s %2s %8s %8s %8s %2s %6s %6s %9s %s %c\e[0m\n",
             "PID", "UID", "PR", "NI", "VIRT", "RES", "SHR", "S", "\%CPU", "\%MEM", "TIME+", "COMMAND", 27);
     
-    ProcInfo *proc = (ProcInfo*)malloc(sizeof(ProcInfo));
     // prendiamo dalla directory proc solo le directory il cui nome sia un numero
     // in modo da prendere solo le cartelle dei processi
     int timesec, n = scandir("/proc", &namelist, filter, alphasort);
     len_namelist = n;
+    ProcInfo *proc = (ProcInfo*)malloc(sizeof(ProcInfo));
     if (n == -1) handle_error("ERROR (print_top): scandir");
     while (n--) {
         // richiama la funzione get_procinfo su ogni processo
@@ -182,6 +182,7 @@ int askAction(struct dirent **list_names,int length) {
     printf("Enter the action - \033[0;35m 0: terminate \033[0;31m 1: kill \033[0;32m 2: suspend \033[0;36m 3: resume\e[0m: ");
     scanf("%d", &action);
     
+    // lg
     switch (action) {
         case 0:
             kill(pid_to_affect, SIGINT);
