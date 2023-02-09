@@ -4,7 +4,7 @@ Project for OS course. We've implemented the "top" shell command in pure 'C'.
 # Instructions
 To run the code, just build the project using the makefile. Once in the directory of the project, just type the following:
 ```bash
-$ make
+make
 ```
 To run the "top" command, just type:
 ```bash
