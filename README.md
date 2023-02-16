@@ -10,7 +10,7 @@ To run the "top" command, just type:
 ```bash
 ./main
 ```
-Once you run the code, by pressing "Ctrl+\" it's possible to enter the pid of a process and choose either to terminate, kill, suspend or resume the process.
+Once you run the code, by pressing "Ctrl+\\" it's possible to enter the pid of a process and choose either to terminate, kill, suspend or resume the process.
 
 # Authors
 1. [Luigi Gallo](https://github.com/luigi-ga)
